@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//c/Program Files/**)",
+      "PowerShell(Get-ChildItem \"C:\\\\Program Files\\\\\" | Where-Object { $_.Name -match \"java|jdk|jre|eclipse|adoptium|corretto|temurin\" -or $_.Name -match \"Java\" } | Select-Object Name, FullName)",
+      "Read(//c//**)",
+      "PowerShell($javaExe = \"C:\\\\Program Files\\\\JetBrains\\\\IntelliJ IDEA Community Edition 2024.1.1\\\\jbr\\\\bin\\\\java.exe\"; if \\(Test-Path $javaExe\\) { & $javaExe -version })",
+      "PowerShell($env:JAVA_HOME = \"C:\\\\Program Files\\\\JetBrains\\\\IntelliJ IDEA Community Edition 2024.1.1\\\\jbr\"; $env:PATH = \"$env:JAVA_HOME\\\\bin;$env:PATH\"; cd \"c:\\\\Users\\\\blodb\\\\Downloads\\\\26b-10142-unittesting-ariel_abbas\"; .\\\\gradlew.bat test 2>&1)"
+    ]
+  }
+}

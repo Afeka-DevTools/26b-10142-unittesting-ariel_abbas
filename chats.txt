@@ -1,0 +1,416 @@
+================================================================
+CONVERSATION: Unit Testing in Java
+================================================================
+
+----------------------------------------------------------------
+USER: What are unit tests and how are they written in Java?
+----------------------------------------------------------------
+
+CLAUDE:
+Unit Tests
+----------
+Unit tests verify that individual pieces of code (a single method or class)
+behave correctly in isolation. The goal is to test one "unit" of logic at a
+time, independent of databases, networks, or other external systems.
+
+Core Concepts:
+- Arrange  — set up the inputs and dependencies
+- Act      — call the method under test
+- Assert   — verify the output matches expectations
+
+Java Unit Testing with JUnit 5
+-------------------------------
+The standard library is JUnit 5 (often paired with Mockito for mocking dependencies).
+
+Maven dependency:
+    <dependency>
+        <groupId>org.junit.jupiter</groupId>
+        <artifactId>junit-jupiter</artifactId>
+        <version>5.10.0</version>
+        <scope>test</scope>
+    </dependency>
+
+The class under test:
+    public class Calculator {
+        public int add(int a, int b) { return a + b; }
+        public int divide(int a, int b) {
+            if (b == 0) throw new IllegalArgumentException("Cannot divide by zero");
+            return a / b;
+        }
+    }
+
+The test class:
+    import org.junit.jupiter.api.*;
+    import static org.junit.jupiter.api.Assertions.*;
+
+    class CalculatorTest {
+
+        private Calculator calculator;
+
+        @BeforeEach
+        void setUp() {
+            calculator = new Calculator();
+        }
+
+        @Test
+        void add_twoPositiveNumbers_returnsSum() {
+            int result = calculator.add(2, 3);
+            assertEquals(5, result);
+        }
+
+        @Test
+        void divide_byZero_throwsException() {
+            assertThrows(IllegalArgumentException.class,
+                () -> calculator.divide(10, 0));
+        }
+    }
+
+Key Annotations:
+    @Test        — Marks a method as a test case
+    @BeforeEach  — Runs before every test (setup)
+    @AfterEach   — Runs after every test (teardown)
+    @BeforeAll   — Runs once before all tests in the class
+    @DisplayName — Human-readable name for the test
+
+Common Assertions:
+    assertEquals(expected, actual);
+    assertTrue(condition);
+    assertFalse(condition);
+    assertNull(value);
+    assertNotNull(value);
+    assertThrows(ExceptionType.class, () -> methodThatThrows());
+
+Mocking with Mockito:
+    @Test
+    void getUser_callsRepository() {
+        UserRepository mockRepo = Mockito.mock(UserRepository.class);
+        Mockito.when(mockRepo.findById(1)).thenReturn(new User("Alice"));
+
+        UserService service = new UserService(mockRepo);
+        User result = service.getUser(1);
+
+        assertEquals("Alice", result.getName());
+        Mockito.verify(mockRepo).findById(1);
+    }
+
+Good Test Naming Convention:
+    methodName_condition_expectedBehavior
+    e.g. divide_byZero_throwsException
+
+
+----------------------------------------------------------------
+USER: Create unit tests for the functions found in App.java.
+      The unit tests must use the Assert functions found in the
+      AppTest file. Any questions?
+----------------------------------------------------------------
+
+CLAUDE:
+No questions. I have everything I need — 11 methods in App.java and
+the JUnit 5 Assertions.* static import from AppTest.java. Writing the tests now.
+
+[Wrote 33 tests to AppTest.java covering all 11 functions:]
+
+    add            — 3 tests
+    isPrime        — 5 tests
+    reverse        — 3 tests
+    factorial      — 4 tests
+    isPalindrome   — 4 tests
+    fibonacciUpTo  — 3 tests
+    charFrequency  — 3 tests
+    isAnagram      — 3 tests
+    average        — 3 tests
+    filterEvens    — 3 tests
+    mostCommonWord — 2 tests
+    ─────────────────────────
+    Total            33 tests
+
+All tests use assertEquals, assertTrue, assertFalse, assertThrows, and
+assertNotNull from the Assertions.* static import already present in the file.
+
+
+----------------------------------------------------------------
+USER: How do I test to see if the unit tests work?
+----------------------------------------------------------------
+
+CLAUDE:
+This project uses Gradle. Run the tests from the app directory with:
+
+    ./gradlew test        (Mac/Linux)
+    gradlew.bat test      (Windows Command Prompt)
+
+The gradlew.bat is in the root of the project, not inside app/.
+Run from the project root:
+
+    gradlew.bat test
+
+Or using PowerShell:
+
+    .\gradlew.bat test
+
+The HTML report will be at: app\build\reports\tests\test\index.html
+
+
+----------------------------------------------------------------
+USER: gradlew is not recognized it says
+----------------------------------------------------------------
+
+CLAUDE:
+The gradlew.bat is in the root of the project, not inside app/.
+Run this from the root directory:
+
+    gradlew.bat test
+
+Or using PowerShell from the project root:
+
+    .\gradlew.bat test
+
+The report will then be at app\build\reports\tests\test\index.html.
+
+
+----------------------------------------------------------------
+USER: I'm having issues running it. Run the tests yourself and
+      then once you have managed to run the tests and confirmed
+      the unit tests are working properly give me the commands
+      to run it myself.
+----------------------------------------------------------------
+
+CLAUDE:
+[Ran the tests — found Java was not on PATH. Located Java 17 bundled
+with IntelliJ IDEA at:
+    C:\Program Files\JetBrains\IntelliJ IDEA Community Edition 2024.1.1\jbr
+
+Set JAVA_HOME and ran the tests successfully. BUILD SUCCESSFUL.]
+
+All tests pass. Here are the exact commands to run it yourself —
+open PowerShell and run them in order:
+
+    $env:JAVA_HOME = "C:\Program Files\JetBrains\IntelliJ IDEA Community Edition 2024.1.1\jbr"
+    $env:PATH = "$env:JAVA_HOME\bin;$env:PATH"
+    cd "c:\Users\blodb\Downloads\26b-10142-unittesting-ariel_abbas"
+    .\gradlew.bat test
+
+You should see BUILD SUCCESSFUL at the end.
+For a detailed HTML report open: app\build\reports\tests\test\index.html
+
+Note: The first time takes longer (~47s) because Gradle downloads itself.
+Subsequent runs will be much faster.
+
+
+----------------------------------------------------------------
+USER: I want the commands to run it in my terminal
+----------------------------------------------------------------
+
+CLAUDE:
+Run these one at a time in your terminal:
+
+    set JAVA_HOME=C:\Program Files\JetBrains\IntelliJ IDEA Community Edition 2024.1.1\jbr
+    set PATH=%JAVA_HOME%\bin;%PATH%
+    cd "c:\Users\blodb\Downloads\26b-10142-unittesting-ariel_abbas"
+    gradlew.bat test
+
+
+----------------------------------------------------------------
+USER: Run these yourself and check if they work
+----------------------------------------------------------------
+
+CLAUDE:
+[Ran the tests — BUILD SUCCESSFUL in 1s. All tests passed.]
+
+All tests pass. The commands work — use these exactly in Command Prompt
+(not PowerShell):
+
+    set JAVA_HOME=C:\Program Files\JetBrains\IntelliJ IDEA Community Edition 2024.1.1\jbr
+    set PATH=%JAVA_HOME%\bin;%PATH%
+    cd "c:\Users\blodb\Downloads\26b-10142-unittesting-ariel_abbas"
+    gradlew.bat test
+
+You'll see BUILD SUCCESSFUL at the end.
+
+
+----------------------------------------------------------------
+USER: set JAVA_HOME=C:\Program Files\JetBrains\IntelliJ IDEA
+      Community Edition 2024.1.1\jbr
+      [pasted into PowerShell, got error: "Set-Variable: A
+      positional parameter cannot be found that accepts
+      argument 'IDEA'"]
+----------------------------------------------------------------
+
+CLAUDE:
+You're in PowerShell, not Command Prompt. Use this syntax instead:
+
+    $env:JAVA_HOME = "C:\Program Files\JetBrains\IntelliJ IDEA Community Edition 2024.1.1\jbr"
+    $env:PATH = "$env:JAVA_HOME\bin;$env:PATH"
+    .\gradlew.bat test
+
+
+----------------------------------------------------------------
+USER: Is this all that should be in the output:
+      PS C:\...\26b-10142-unittesting-ariel_abbas> .\gradlew.bat test
+      Reusing configuration cache.
+      BUILD SUCCESSFUL in 921ms
+      3 actionable tasks: 3 up-to-date
+      Configuration cache entry reused.
+----------------------------------------------------------------
+
+CLAUDE:
+Yes, that's exactly what a successful run looks like. BUILD SUCCESSFUL
+means all 33 tests passed with no failures.
+
+
+----------------------------------------------------------------
+USER: Aren't there 11 functions to unit test?
+----------------------------------------------------------------
+
+CLAUDE:
+Yes, 11 functions — but each function has multiple test cases.
+The total count is 33 tests across all 11 functions:
+
+    add            — 3 tests
+    isPrime        — 5 tests
+    reverse        — 3 tests
+    factorial      — 4 tests
+    isPalindrome   — 4 tests
+    fibonacciUpTo  — 3 tests
+    charFrequency  — 3 tests
+    isAnagram      — 3 tests
+    average        — 3 tests
+    filterEvens    — 3 tests
+    mostCommonWord — 2 tests
+    ─────────────────────────
+    Total            33 tests
+
+
+----------------------------------------------------------------
+USER: How do I know if the unit tests are enough?
+----------------------------------------------------------------
+
+CLAUDE:
+There's no universal rule, but here are the main things to check:
+
+1. Coverage — are all paths tested?
+   Each function should have tests for:
+   - Happy path  — normal expected input
+   - Edge cases  — boundaries like 0, empty string, single element
+   - Error cases — inputs that should throw exceptions
+
+2. Ask yourself for each function:
+   - What happens with the smallest/largest valid input?
+   - What happens with invalid input?
+   - Are there any special cases the code handles explicitly?
+
+Looking at our tests, here's an honest assessment of gaps:
+
+    add            — Could test integer overflow
+    isPrime        — Could test 0 explicitly
+    reverse        — Good
+    factorial      — Could test large numbers
+    isPalindrome   — Could test empty string
+    fibonacciUpTo  — Could test n=1
+    charFrequency  — Could test spaces/special chars
+    isAnagram      — Could test same string twice
+    average        — Could test negative numbers
+    filterEvens    — Could test all-even list
+    mostCommonWord — Could test a tie
+
+3. The practical standard for a class like this:
+   Our 33 tests cover all happy paths, all documented edge cases, and all
+   throws cases — which is solid for a unit testing exercise. In a production
+   codebase you'd also run a code coverage tool (like JaCoCo) to see exactly
+   which lines are hit, aiming for 80%+ coverage.
+
+
+----------------------------------------------------------------
+USER: Build a test that will fail for me to see as an example
+----------------------------------------------------------------
+
+CLAUDE:
+[Added a deliberately failing test:]
+
+    @Test
+    void add_deliberatelyFailing_example() {
+        assertEquals(99, App.add(3, 4)); // wrong: 3+4 is 7, not 99
+    }
+
+Run .\gradlew.bat test to see the failure. Let me know and I'll remove it.
+
+
+----------------------------------------------------------------
+USER: You can remove it
+----------------------------------------------------------------
+
+CLAUDE:
+Done. Back to 33 passing tests.
+
+
+----------------------------------------------------------------
+USER: Why are there 3 actionable tasks and not 11 as the amount of functions?
+----------------------------------------------------------------
+
+CLAUDE:
+The 3 Gradle tasks and the 11 functions are completely unrelated things.
+They refer to different concepts:
+
+The 3 Gradle tasks are build steps:
+    1. compileJava     — compiles App.java
+    2. compileTestJava — compiles AppTest.java
+    3. test            — runs all the tests
+
+The 11 functions are what's being tested inside step 3.
+
+Gradle doesn't count functions — it counts the build pipeline steps needed
+to go from source code to test results. The actual test count (33) happens
+entirely within the test task.
+
+
+----------------------------------------------------------------
+USER: If you had to add more tests, what would you cover?
+----------------------------------------------------------------
+
+CLAUDE:
+Based on the gaps identified earlier, here's what I'd add:
+
+1. mostCommonWord — tie between two words
+       mostCommonWord("cat dog cat dog")
+       // unpredictable which word wins — worth knowing the behavior
+
+2. isPalindrome — empty string
+       isPalindrome("")
+       // is "" a palindrome? logically yes, but worth confirming
+
+3. fibonacciUpTo(1) — boundary between 0 and 2
+       fibonacciUpTo(1) // expected [0, 1, 1]
+
+4. filterEvens — all even list
+       filterEvens(Arrays.asList(2, 4, 6)) // should return the full list unchanged
+
+5. average — negative numbers
+       average(new int[]{-3, -1, -2}) // should return -2.0
+
+6. isAnagram — same string compared to itself
+       isAnagram("hello", "hello") // should return true
+
+7. isPrime(0) — explicitly test zero
+       isPrime(0) // should return false
+
+These 7 additional tests would close the meaningful gaps.
+
+
+----------------------------------------------------------------
+USER: Yes [add them]
+----------------------------------------------------------------
+
+CLAUDE:
+[Added all 7 tests. One test failed on first run:]
+
+    fibonacciUpTo_one_returnsZeroAndOne FAILED
+    Expected: [0, 1]
+    Actual:   [0, 1, 1]
+
+The function includes both 1s in the sequence when the limit is 1,
+because 1 <= 1 in the while loop. Fixed the expected value to [0, 1, 1].
+
+All 40 tests now pass. BUILD SUCCESSFUL.
+
+================================================================
+END OF CONVERSATION
+================================================================
